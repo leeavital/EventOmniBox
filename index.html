@@ -1,13 +1,35 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
+		<script type="text/javascript" src="enums.js"></script>
+		<script type="text/javascript" src="datetime.js"></script>
+		<script type="text/javascript" src="event.js"></script>
 		<script type="text/javascript" src="omnibox.js"></script>
 	</head>
 	<body>
 		<div id="box"></div>
+		<ul id="list"></ul>
 	</body>
 	<script type="text/javascript">
 		var obox = new Omnibox(document.getElementById("box"));
+		obox.setInputAttributes({
+			id: "input",
+			username: "Lee Avital"
+		});
+		obox.setEventChange(function(event){
+			
+			mainList = document.getElementById("list");
+			mainList.innerHTML = "";
+			
+			time = event.datetime.toString();
+			timeList = document.createElement("li");
+			timeList.innerHTML = "Datetime: " + time;
+			
+			
+			mainList.appendChild(timeList);
+			
+		});
+		
 		
 	</script>
 </html>
