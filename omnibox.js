@@ -214,18 +214,32 @@ function Omnibox(container){
 	
 	
 	
-	
+	/**
+	 * get the event object that contains all the data interpreted by the omnibox
+	 */
 	var _getEvent = this.getEvent = function(){
 		return _event;
 	}
 	
 	
 	
+	/**
+	 * set the event change handler. 
+	 *
+	 * whatever function is passed will be called every time the event state changes
+	 */
 	this.setEventChange = function(e){
 		_onEventChange = e;
 	}
 	
 
+	/** 
+	 * Set attributes for the HTML input element associated with the omnibox.
+	 *
+	 * @param an objec where the keys are the names of attributes and the values are those 
+	 * attributes values. This can be used to set native attributes such as id, name, value etc. 
+	 * as well as dataset attributes.
+	 */
 	this.setInputAttributes = function(attributes){
 		
 		for(attr in attributes){
@@ -237,6 +251,8 @@ function Omnibox(container){
 		}
 	}
 	
+	
+	// set the onkeyup function of the input to parse the input.
 	_input.onkeyup = function(){
 		_parse(_getInput());
 	};
