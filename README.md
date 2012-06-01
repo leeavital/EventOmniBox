@@ -9,26 +9,25 @@ Usage
 =====
 
 
-<<<<<<< HEAD
+    // create a new omnibox with the input box in document.body
     var obox = new OmniBox(document.body);
+    
+    // set some attributes of the input box. These can be build in attributes or 
+    //dataset attributes.
     obox.setInputAttributes({
-		className: "primary-input", // css id
-		somedata: "data" // this will go into dataset
+    	className: "primary-input", // css id
+    	somedata: "data" // this will go into dataset
     });
+    
+    
+    // give an event handler to the omnibox, this function will execute everytime 
+    //the event read by the omnibox changes
     obox.setEventChange(function(event){
-		// do something with the event.
+    	// do something with the event.
     })
 
-=======
-    var obox = new OmniBox(document.body);`
-
-    function readTheEvent(){
-      event = obox.getEvent();
-        // do something with the event
-    }
->>>>>>> bfc798d63e230cec3c28c5e536c272ed337069e5
-
-
+    
+    
 Authors
 -------
 
