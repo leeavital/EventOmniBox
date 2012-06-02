@@ -5,6 +5,13 @@
 		<script type="text/javascript" src="datetime.js"></script>
 		<script type="text/javascript" src="event.js"></script>
 		<script type="text/javascript" src="omnibox.js"></script>
+		<style type="text/css">
+			#input{
+				width: 500px;
+				height: 25px;
+				font-size: 20px;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="box"></div>
@@ -23,7 +30,7 @@
 			
 			time = event.datetime.toString();
 			timeList = document.createElement("li");
-			timeList.innerHTML = "Datetime: " + time;
+			timeList.innerHTML = "Datetime: <pre>" + time + "</pre>";
 			
 			
 			mainList.appendChild(timeList);

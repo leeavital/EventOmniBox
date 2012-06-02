@@ -83,7 +83,7 @@ function Omnibox(container){
 		
 		
 		// look for time in the form of a single number or "noon" or "midnight".
-		time = clause.match(/(^\s*(\d|10|11|12)\s*$)|noon|midnight/g)
+		time = clause.match(/(^\s*(\d|10|11|12)\s*$)|noon|midnight/i)
 		if(time){
 			time = time[0];
 			debug("found a time: " + time);
@@ -105,14 +105,14 @@ function Omnibox(container){
 		
 		
 		// get the meridiam.
-		meridiam = clause.match(/(A|P)(\.)?M/gi);
+		meridiam = clause.match(/(A|P)(\.)?M/i);
 		if(meridiam){
 			debug("matched a meridiam");
 			meridiam = meridiam[0];
-			if(meridiam.match(/A(\.)?M(\.)?/gi)){
+			if(meridiam.match(/A(\.)?M(\.)?/i)){
 				_event.datetime.meridiam = MERIDIAM.AM;
 			}
-			else if(meridiam.match(/P(\.)?M(\.)?/gi)){
+			else if(meridiam.match(/P(\.)?M(\.)?/i)){
 				_event.datetime.meridiam = MERIDIAM.PM;
 			}
 			
@@ -147,7 +147,6 @@ function Omnibox(container){
 		monthdate = clause.match(/(jan(uary)?|feb(ruary)?|mar(ch)?|apr(ril)?|may|june|jul(y)?|aug(ust)?|sep(tember)?|oct(ober)?|(nov|dec)(ember)?)((\s)+(the)?(\s)*(\d{1,2}))?/gi);
 		if(monthdate){
 			month = monthdate[0];
-			console.log(monthdate);
 			
 			if(month.match(/jan(uary)?/gi)){
 				_event.datetime.month = MONTHS.JANUARY;
@@ -191,14 +190,20 @@ function Omnibox(container){
 		}
 
 
-		date = clause.match(/d/gi);
-		
+		date = clause.match(/(\d{1,2})(th|st|nd|rd)/i);
+		if(date){
+			date = date[0];
+			debug("found a date: " + date);
+			date = date.match(/\d{1,2}/)[0];
+			_event.datetime.date = parseInt(date);
+
+		}
 	
 	
 	};
 	
 	/** 
-	 * get te input text 
+	 * get the input text 
 	 */
 	_getInput = this.getInput = function(){
 		return _input.value;
