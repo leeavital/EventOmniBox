@@ -19,7 +19,7 @@
 // also: Friday at 10 doesn't work.
 DateTime.prototype.toString = function(){
 	
-	
+	//this should be wrapped in <pre></pre> if it's going into HTML.
 	str = "";
 	str += "Day: " +   ((this.day != undefined) ? this.day.name : "not yet given") + "\n";
 	str += "Month: " + ((this.month != undefined) ? this.month.name : "not yet given") + "\n";
@@ -27,9 +27,9 @@ DateTime.prototype.toString = function(){
 	str += "Hour: " +  ((this.hour != undefined) ? this.hour : "not yet given") + "\n";
 	str += "Minute: " +((this.minute != undefined) ? this.minute : "not yet given") + "\n";
 	str += "Meridiam: " +((this.meridiam != undefined) ? this.meridiam.name : "not yet given") + "\n";
-
-
 	return str;
+
+
 	/* This fancy toString is commented out because it isn't really useful for debuging. 
 	var str = "";
 	var time = ""; 

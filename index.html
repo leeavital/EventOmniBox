@@ -4,12 +4,24 @@
 		<script type="text/javascript" src="enums.js"></script>
 		<script type="text/javascript" src="datetime.js"></script>
 		<script type="text/javascript" src="event.js"></script>
+		<script type="text/javascript" src="location.js"></script>
 		<script type="text/javascript" src="omnibox.js"></script>
 		<style type="text/css">
+			body{
+				text-align: center;
+			}
+
 			#input{
-				width: 500px;
+				width: 90%;
 				height: 25px;
 				font-size: 20px;
+				margin: auto;
+			}
+
+			ul{
+				text-align: left;
+				width: 400px;
+				margin:auto;
 			}
 		</style>
 	</head>
@@ -25,16 +37,26 @@
 		});
 		obox.setEventChange(function(event){
 			
-			mainList = document.getElementById("list");
+			var mainList = document.getElementById("list");
 			mainList.innerHTML = "";
 			
-			time = event.datetime.toString();
-			timeList = document.createElement("li");
+			var time = event.datetime.toString();
+			var timeList = document.createElement("li");
 			timeList.innerHTML = "Datetime: <pre>" + time + "</pre>";
+		
+
+			var location = event.location.toString();
+			var locList = document.createElement("li");
+			locList.innerHTML = "Location: <pre>" + location + "</pre>";
 			
-			
+
+			var tags = event.tags;
+			var tagList = document.createElement("li");
+			tagList.innerHTML = "tags: <pre>" + tags + "</pre>";
+
 			mainList.appendChild(timeList);
-			
+			mainList.appendChild(locList);	
+			mainList.appendChild(tagList);
 		});
 		
 		

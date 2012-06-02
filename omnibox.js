@@ -10,24 +10,43 @@ function Omnibox(container){
 	var _input = document.createElement("input");
 	var _event = new Event();
 	var _onEventChange;
-		
+	
+
+
+
 	_input.type = "text";
 	_input.placeholder = "Enter Some Details";
 	_container.appendChild(_input);
+
+
+	// REGULAR EXPRESSIONS.
+	// many of these are generic and more specific ones should be generated server side based on location.
 	
+	// regular expression for an address--matches addresses in the forms:
+	// 100 John street 
+	// 160 Park Point
+	var _rxpAddress = /(\d+)(\s+)([a-zA-Z]+\s?)*/gi;
 	
 	/**
 	 * parse the input message and return an object containing information about the event
 	 * this works by splitting the input by articles like at, from, to, on etc. and then parsing each of those tokens individually.
 	 */
 	var _parse = function(input){		
-		
+	
+
 		if(input == "" ||input == undefined){
 			_clear();
 		}
 		
+		
+		// there's got to be a better solution to this, but at the time
+		// old parsed tags stay in the tag list. So "Magic Tournament" has tags:
+		//"m", "ma", "mag" etc. without this reset.
+		_event.tags = [];
+
 		// split by articles like at|to|from etc.
-		var tokens = input.split(/\b(at|to|from|on)\b/gi);
+		var tokens = input.split(/\b(near|at|to|from|on)\b/gi);
+		debug("we will parse the tokens " + tokens);
 		
 		// go through all the tokens and interpret them individually.
 		for(var t in tokens){
@@ -57,11 +76,15 @@ function Omnibox(container){
 	 * @param clause the clause containing information about the event.
 	*/
 	var _parseToken = function(clause){
-		
+	
+		//debug("parsing the token: " + clause);
+		var interpreted = false;
+		var timeparsed = false;
+
 		// look for time in the form d:dd
 		time = clause.match(/(\d{1,2}:\d\d)/);
 		if(time){
-			debug("found a match for time!");
+			//:debug("found a match for time!");
 			wholetime = time[0];
 			
 			// get the time by searching for a regexp \d\d:\d\d
@@ -79,14 +102,16 @@ function Omnibox(container){
 				}
 				
 			}
+			interpreted = true;
+			timeparsed = true;
 		}
 		
 		
 		// look for time in the form of a single number or "noon" or "midnight".
-		time = clause.match(/(^\s*(\d|10|11|12)\s*$)|noon|midnight/i)
+		time = clause.match(/(^\s*(\d|10|11|12)\s*$)|noon|midnight/gi)
 		if(time){
 			time = time[0];
-			debug("found a time: " + time);
+			//debug("found a time: " + time);
 			if(time.toLowerCase() == "midnight"){
 				_event.datetime.hour = 12;
 				_event.datetime.minute = 0;
@@ -100,14 +125,15 @@ function Omnibox(container){
 				time = parseInt(time);
 				_event.datetime.hour = time;
 			}
-			
+			interpreted = true;
+			timeparsed = true;
 		}
 		
 		
 		// get the meridiam.
-		meridiam = clause.match(/(A|P)(\.)?M/i);
+		meridiam = clause.match(/\s(A|P)(\.)?M\s?/i);
 		if(meridiam){
-			debug("matched a meridiam");
+			//debug("matched a meridiam");
 			meridiam = meridiam[0];
 			if(meridiam.match(/A(\.)?M(\.)?/i)){
 				_event.datetime.meridiam = MERIDIAM.AM;
@@ -116,6 +142,8 @@ function Omnibox(container){
 				_event.datetime.meridiam = MERIDIAM.PM;
 			}
 			
+			interpreted = true;
+			timeparsed = true;
 		}
 		
 		
@@ -123,7 +151,7 @@ function Omnibox(container){
 		day = clause.match(/monday|tuesday|wednesday|thrusday|friday|saturday|sunday|mon|tues|wed|thurs|fri|sat|sun/gi);
 		if(day){
 			day = day[0];
-			debug("we found a day: " + day);
+			//debug("we found a day: " + day);
 			
 			if(day.match(/mon(day)?/gi)){
 				_event.datetime.day = DAYS.MONDAY;
@@ -140,6 +168,8 @@ function Omnibox(container){
 			}else if(day.match(/sun(day)?/gi)){
 				_event.datetime.day = DAYS.SUNDAY;
 			}
+			interpreted = true;
+			timeparsed = true;
 		}
 		
 		
@@ -179,7 +209,7 @@ function Omnibox(container){
 			date = month.match(/(\d){1,2}/);
 			if(date){
 				date = date[0];
-				debug("found a date: " + date);
+				//debug("found a date: " + date);
 				try{
 					date = parseInt(date);
 				}catch(e){
@@ -187,19 +217,41 @@ function Omnibox(container){
 				}
 				_event.datetime.date = date;
 			}
+			interpreted = true;
+			timeparsed = true;
 		}
 
 
 		date = clause.match(/(\d{1,2})(th|st|nd|rd)/i);
 		if(date){
 			date = date[0];
-			debug("found a date: " + date);
+			//debug("found a date: " + date);
 			date = date.match(/\d{1,2}/)[0];
 			_event.datetime.date = parseInt(date);
 
+			interpreted = true;
+			timeparsed = true;
+		}
+
+		if(timeparsed){
+			return;
+		}
+	
+
+		address = clause.match(_rxpAddress);
+		if(address){
+			//debug("found an address: " + address)
+			address = address[0];
+			_event.location.location = address;
+			
+			interpreted = true;
 		}
 	
 	
+		// if there were no matches, add it to the tags.
+		if(!interpreted){
+			_event.tags.push(clause);
+		}
 	};
 	
 	/** 
@@ -245,13 +297,7 @@ function Omnibox(container){
 	_input.onkeyup = function(){
 		_parse(_getInput());
 	};
-	
-	
-	
-
-	
-	
-	
+		
 }
 
 
